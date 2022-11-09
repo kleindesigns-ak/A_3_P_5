@@ -53,6 +53,11 @@ private:
     // HELPERS
     void initializeRandomMaze();
     void initializeBoolArr();
+
+    bool search(int x, int y,
+                int solutionX[], int solutionY[], int &numEntries);
+    bool validMove(int newX, int newY);
+    void addToArrays(int x[], int y[], int &numEntries, int xVal, int yVal);
 public:
     char maze[HEIGHT][WIDTH];
     bool visited[HEIGHT][WIDTH];
@@ -62,4 +67,5 @@ public:
     int getYLocation();
 
     void solveMaze();
+    static void printMaze(char maze[][WIDTH], int curX, int curY);
 };

@@ -183,7 +183,6 @@ bool Maze::move(int &curX, int &curY, int newX, int newY)
     return foundExit;
 }*/
 
-
 Maze::Maze() {
     srand(time(nullptr));
     initializeRandomMaze();
@@ -257,6 +256,96 @@ int Maze::getYLocation() {
 
 
 void Maze::solveMaze() {
+    // Here I created arrays to store the x/y coordinates for the path of our solution.
+    // The array is of size [HEIGHT-2]*[WIDTH-2] since we'll never exceed that size.
+    // I also made a variable to count how many entries we make.
+    // It would probably be more convenient to make a class to store this data rather than
+    // have two separate arrays!
 
+    int solutionX[(HEIGHT-2)*(WIDTH-2)], solutionY[(HEIGHT-2)*(WIDTH-2)];
+    int numPoints = 0;
+
+    bool found = search(x, y, solutionX, solutionY, numPoints);
+    if (!found)
+        cout << "No solution found.";
+    else
+    {
+        cout << "Solution found!  Here is the path from the start." << endl;
+        for (int i = numPoints-1; i >= 0; i--)
+        {
+            printMaze(maze, solutionX[i], solutionY[i]);
+            cout << endl;
+        }
+    }
 }
+
+// Display the maze in ASCII
+void Maze::printMaze(char (*maze)[20], int curX, int curY) {
+    for (int yUnits=0; yUnits < HEIGHT; yUnits++)
+    {
+        for (int xUnits=0; xUnits < WIDTH; xUnits++)
+        {
+            if ((xUnits == curX) && (yUnits == curY))
+                cout << "@";
+            else
+                cout << maze[yUnits][xUnits];
+        }
+        cout << endl;
+    }
+}
+
+bool
+
+// Recursively search from x,y until we find the exit
+Maze::search(int x, int y, int *solutionX, int *solutionY, int &numEntries) {
+    bool foundExit = false;
+
+    if (maze[y][x]=='E')
+        return true;
+    visited[y][x]=true;
+    if (validMove(x,y-1))
+        foundExit = search(x,y-1,solutionX,solutionY,numEntries);
+    if (!foundExit && (validMove(x,y+1)))
+        foundExit = search(x,y+1,solutionX,solutionY,numEntries);
+    if (!foundExit && (validMove(x-1,y)))
+        foundExit = search(x-1,y,solutionX,solutionY,numEntries);
+    if (!foundExit && (validMove(x+1,y)))
+        foundExit = search(x+1,y,solutionX,solutionY,numEntries);
+
+    if (foundExit)
+    {
+        // Remember coordinates we found the exit in the solution arrays
+        addToArrays(solutionX, solutionY, numEntries, x, y);
+        return true;
+    }
+    return false;
+}
+
+// Return true or false if moving to the specified coordinate is valid
+// Return false if we have been to this cell already
+bool Maze::validMove(int newX, int newY) {
+    // Check for going off the maze edges
+    if (newX < 0 || newX >= WIDTH)
+        return false;
+    if (newY < 0 || newY >= HEIGHT)
+        return false;
+    // Check if target is a wall
+    if (maze[newY][newX]=='X')
+        return false;
+    // Check if visited
+    if (visited[newY][newX])
+        return false;
+    return true;
+}
+
+// This new function adds two numbers to the arrays and increments the count of how many
+// numbers have been added. It assumes the arrays have been created big enough to not
+// have overflow. It is used to remember the coordinates of our solution.
+void Maze::addToArrays(int *x, int *y, int &numEntries, int xVal, int yVal) {
+    x[numEntries] = xVal;
+    y[numEntries] = yVal;
+    numEntries++;
+}
+
+
 
