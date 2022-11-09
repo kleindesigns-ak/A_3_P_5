@@ -11,7 +11,9 @@ int main()
 {
     Maze maze_1;
 
-    Maze::printMaze(maze_1.maze, maze_1.getXLocation(), maze_1.getYLocation());
+    // Example of how to print the maze at current point
+
+    /*Maze::printMaze(maze_1.maze, maze_1.getXLocation(), maze_1.getYLocation());*/
 
     maze_1.solveMaze();
 }
